@@ -3,7 +3,18 @@ import "../css/App.css";
 import data from "../sample_data.json";
 
 function App() {
-  return <div className="app">Trivia!</div>;
+  var testQuestion = "test question"
+  return (
+    <div>
+      <div className="app">Trivia!</div>
+      <Question text={}/> 
+      <Question text="Different Text" />    
+    </div>
+  );
 }
 
 export default App;
+
+function Question({ text }) {
+  return <div>{text}</div>;
+}
