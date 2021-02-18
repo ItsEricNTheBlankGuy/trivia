@@ -3,13 +3,20 @@ import "../css/App.css";
 import data from "../sample_data.json";
 
 function App() {
-  var testQuestion = "test question";
   var questionNum = 0;
+  let [ questionNumber, changeQuestionNumber ] = useState(questionNum);
+  let [ answerDisplayed, setAnswerDisplayed ] = useState(false);
+  var testQuestion = "test question";
+  var correctChoice = data[0].question.correct_choice_index;
   return (
     <div>
       <div className="app">Trivia!</div>
-      <Question text={data[0].question.text} />
-      <NextQuestion />
+      <Question text={data[0].question.text} answerChoices={data[0].question.choices} />
+      <NextQuestion makeItNext={changeQuestionNumber()} />
+      <button onClick={()=>setAnswerDisplayed(data[0].question.choices[correctChoice])}>
+        Answer
+      </button>
+      <div>{answerDisplayed}</div>
     </div>
   );
 }
@@ -17,17 +24,21 @@ function App() {
 export default App;
 
 function Question({ text, answerChoices} ) {
-  answerChoices.map();
+  //answerChoices.map();
   return (
     <div class="questionBox">
       {text}
-      <Answer text={"Answer goes here"} {answerChoices} />
+      <Answer text={"Answer goes here"} />
+      {
+        answerChoices.map(answer  => (<Answer text={answer} />))
+      }
+      
       
     </div>);
 }
 
-function NextQuestion( ) {
-  return (<button onclick="myFunction()">Click me</button>);
+function NextQuestion({ makeItNext }) {
+  return (<button onclick={makeItNext}>Next Question</button>);
 }
 
 function Answer({ text }) {
@@ -36,3 +47,9 @@ function Answer({ text }) {
     {text}
   </div>);
 }
+
+function changeQuestionNumber() {
+  questionNumber++;
+}
+
+
