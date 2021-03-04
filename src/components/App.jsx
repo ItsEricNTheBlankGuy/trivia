@@ -2,20 +2,32 @@ import React, { Component, useState } from "react";
 import "../css/App.css";
 import data from "../sample_data.json";
 
+
 function App() {
-  var questionNum = 0;
-  let [ questionNumber, changeQuestionNumber ] = useState(questionNum);
+  let [ questionNumber, changeQuestionNumber ] = useState(0);
   let [ answerDisplayed, setAnswerDisplayed ] = useState(false);
-  var testQuestion = "test question";
-  var correctChoice = data[0].question.correct_choice_index;
+  let [ selectedAnswer, changeSelectedAnswer ] = useState("");
+  var testQuestion = "";
+  var correctChoice = data[questionNumber].question.correct_choice_index;
+  console.log(selectedAnswer, correctChoice);
+  if (selectedAnswer === data[questionNumber].question.choices[correctChoice]){
+    testQuestion = "Correct"; // `Correct! You guessed ${}`
+  } else if (selectedAnswer !== ""){
+    testQuestion = "Wrong";
+  }
+
   return (
     <div>
       <div className="app">Trivia!</div>
-      <Question text={data[0].question.text} answerChoices={data[0].question.choices} />
-      <NextQuestion makeItNext={changeQuestionNumber()} />
-      <button onClick={()=>setAnswerDisplayed(data[0].question.choices[correctChoice])}>
+      <Question text={data[questionNumber].question.text} answerChoices={data[questionNumber].question.choices} setChosenAnswer={changeSelectedAnswer} />
+      
+      <NextQuestion makeItNext={() => changeQuestionNumber(questionNumber + 1)} />
+
+      <button onClick={()=>setAnswerDisplayed(data[questionNumber].question.choices[correctChoice])}>
         Answer
       </button>
+
+      <div>{testQuestion}</div>      
       <div>{answerDisplayed}</div>
     </div>
   );
@@ -23,14 +35,15 @@ function App() {
 
 export default App;
 
-function Question({ text, answerChoices} ) {
+function Question({ text, answerChoices, setChosenAnswer } ) {
   //answerChoices.map();
   return (
     <div class="questionBox">
       {text}
       <Answer text={"Answer goes here"} />
       {
-        answerChoices.map(answer  => (<Answer text={answer} />))
+        answerChoices.map((answer)  => (<Answer key={text} text={answer} handleClick={() => setChosenAnswer(answer)} />))
+        
       }
       
       
@@ -38,18 +51,16 @@ function Question({ text, answerChoices} ) {
 }
 
 function NextQuestion({ makeItNext }) {
-  return (<button onclick={makeItNext}>Next Question</button>);
+  return (<button onClick={makeItNext}>Next Question</button>);
 }
 
-function Answer({ text }) {
+function Answer({ text, handleClick }) {
   return(
-  <div>
+  <div onClick={() => handleClick()}>
     {text}
   </div>);
 }
 
-function changeQuestionNumber() {
-  questionNumber++;
-}
+
 
 
